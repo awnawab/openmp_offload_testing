@@ -1,0 +1,7 @@
+try_compile(
+    _HAVE_OMP_OFFLOAD
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${PROJECT_SOURCE_DIR}/src/test_openmp_target.F90
+    LINK_LIBRARIES OpenMP::OpenMP_Fortran
+    OUTPUT_VARIABLE _HAVE_OMP_OFFLOAD_OUTPUT
+)

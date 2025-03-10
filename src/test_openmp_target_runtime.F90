@@ -3,13 +3,15 @@ program test_openmp_target_runtime
    
     use omp_lib
     use, intrinsic :: iso_c_binding
+    use, intrinsic :: iso_fortran_env, only : int64
     implicit none
 
     integer, pointer, contiguous :: p(:) => null()
     integer, pointer :: a(:) => null()
     integer, pointer, contiguous :: a_dev(:) => null()
     integer(kind=c_int) :: err, hst_id, dev_id
-    integer(kind=c_size_t) :: siz, offset
+    integer(kind=c_size_t) :: offset
+    integer(kind=int64) :: siz
 
     allocate(a(256))
     allocate(a_dev(256))

@@ -27,7 +27,11 @@ program test_openmp_target_runtime
     !... allocate device memory
     !$omp target enter data map(alloc:a_dev)
 
+#ifdef __NVCOMPILER
     !$omp target data use_device_ptr(a_dev)
+#else
+    !$omp target data use_device_addr(a_dev)
+#endif
     err = omp_target_memcpy(c_loc(a_dev), c_loc(a), siz, offset, offset, dev_id, hst_id)
     !$omp end target data
 
@@ -36,7 +40,11 @@ program test_openmp_target_runtime
        p = p + 2
     !$omp end target
 
+#ifdef __NVCOMPILER
     !$omp target data use_device_ptr(a_dev)
+#else
+    !$omp target data use_device_addr(a_dev)
+#endif
     err = omp_target_memcpy(c_loc(a), c_loc(a_dev), siz, offset, offset, hst_id, dev_id)
     !$omp end target data
 

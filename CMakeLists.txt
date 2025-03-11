@@ -8,7 +8,8 @@ if( NOT ecbuild_FOUND )
 endif()
 
 # define the project
-project( openmp_offload_test LANGUAGES Fortran VERSION 0.0 )
+# The CXX compiler needs to be defined to find hipfort
+project( openmp_offload_test LANGUAGES Fortran CXX VERSION 0.0 )
 
 # set compiler flags
 include( cmake/compile_options.cmake )
@@ -24,6 +25,9 @@ if( NOT HAVE_OMP_OFFLOAD )
    message( FATAL_ERROR "OpenMP target offload is required." )
 endif()
 
+# find hipfort
+find_package(hipfort COMPONENTS hip)
+
 # sources
 list( APPEND srcs
       src/test_openmp_target.F90
@@ -33,13 +37,17 @@ list( APPEND srcs
       src/test_openmp_target_struct.F90
 )
 
+if(hipfort_FOUND)
+  list( APPEND srcs src/test_openmp_target_runtime_hipfort.F90)
+endif()
+
 # add tests
 include(CTest)
 foreach( src IN LISTS srcs)
 
    get_filename_component( _name ${src} NAME_WE )
    add_executable( ${_name}.x ${src} )
-   target_link_libraries( ${_name}.x PRIVATE OpenMP::OpenMP_Fortran )
+   target_link_libraries( ${_name}.x PRIVATE OpenMP::OpenMP_Fortran $<${hipfort_FOUND}:hipfort::hip> )
    target_link_options( ${_name}.x PRIVATE SHELL:${OpenMP_Fortran_FLAGS} )
    add_test( NAME ${_name} COMMAND ${_name}.x )
 

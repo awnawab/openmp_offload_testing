@@ -14,7 +14,7 @@ program test_openmp_target_attach
     !$omp target enter data map(to:a)
 
     p => a
-    !$omp target
+    !$omp target map(to:p)
        p = p + 2
     !$omp end target
 

@@ -32,7 +32,7 @@ program test_openmp_target_runtime
     !$omp end target data
 
     p => a_dev
-    !$omp target
+    !$omp target map(to:p)
        p = p + 2
     !$omp end target
 
